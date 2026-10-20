@@ -15,6 +15,7 @@ import {
 import { Brand, Reveal, SectionLabel } from "./components";
 import {
   ADMIN_EMAIL,
+  hasAdminEmail,
   OTHER_ROLE,
   navigation,
   categories,
@@ -428,7 +429,7 @@ export default function App() {
                 <div>
                   <span className="contact-mini-label">MESSAGE US</span>
                   <p>Candidate or employer, our team is just a message away.</p>
-                  <a className="contact-small-link" href={`mailto:${ADMIN_EMAIL}`}><Mail size={16} aria-hidden="true" /> Email Hashein Uganda <ArrowUpRight size={15} aria-hidden="true" /></a>
+                  {hasAdminEmail && <a className="contact-small-link" href={`mailto:${ADMIN_EMAIL}`}><Mail size={16} aria-hidden="true" /> Email Hashein Uganda <ArrowUpRight size={15} aria-hidden="true" /></a>}
                   <a className="contact-small-link" href="tel:+256780611480"><Phone size={16} aria-hidden="true" /> +256 780 611 480</a>
                 </div>
               </div>
@@ -442,7 +443,7 @@ export default function App() {
           <div className="footer-brand"><Brand /><p>Connecting people, possibilities and places.</p></div>
           <div className="footer-links">
             <div><span>EXPLORE</span><a href="#opportunities" onClick={(event) => goToSection(event, "#opportunities")}>Opportunities</a><a href="#destinations" onClick={(event) => goToSection(event, "#destinations")}>Destinations</a><a href="#process" onClick={(event) => goToSection(event, "#process")}>How it works</a><a href="#requirements" onClick={(event) => goToSection(event, "#requirements")}>Requirements</a></div>
-            <div><span>GET IN TOUCH</span><a href={signupUrl()}>Sign up</a><a href="tel:+256780611480">Call our team</a><a href={`mailto:${ADMIN_EMAIL}`}>Email us</a><a href="#contact" onClick={(event) => goToSection(event, "#contact")}>Visit us</a><a href="#faqs" onClick={(event) => goToSection(event, "#faqs")}>FAQs</a></div>
+            <div><span>GET IN TOUCH</span><a href={signupUrl()}>Sign up</a><a href="tel:+256780611480">Call our team</a>{hasAdminEmail && <a href={`mailto:${ADMIN_EMAIL}`}>Email us</a>}<a href="#contact" onClick={(event) => goToSection(event, "#contact")}>Visit us</a><a href="#faqs" onClick={(event) => goToSection(event, "#faqs")}>FAQs</a></div>
           </div>
         </div>
         <div className="page-container footer-bottom">

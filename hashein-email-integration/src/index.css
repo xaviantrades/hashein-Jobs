@@ -2328,23 +2328,55 @@ section[id] {
 }
 
 
-/* Application-fee payment step */
+/* Application-fee payment step (rendered inside the light application panel) */
 .form-payment-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  width: 100%;
   margin: 1rem 0;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 12px;
-  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #f1f2e9;
 }
 .form-payment-summary strong { font-size: 1.15rem; }
-.payment-status { padding: .85rem 1rem; border-radius: 10px; line-height: 1.5; }
-.payment-status--error { background: rgba(190, 50, 50, .12); }
-.payment-status--waiting, .payment-status--starting, .payment-status--submitting { background: rgba(220, 170, 55, .12); }
-.payment-status--done { background: rgba(35, 150, 95, .12); }
-.payment-step .form-field { margin: 1rem 0; }
+.payment-status {
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: .85rem 1rem;
+  border-left: 3px solid currentColor;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.payment-status--error { background: #fbe9e6; color: #8a2c21; }
+.payment-status--waiting, .payment-status--starting, .payment-status--submitting { background: #faf2d8; color: #6d5514; }
+.payment-status--done { background: #e6f2e3; color: #2f5b36; }
+.payment-step .form-field { width: 100%; margin: 1rem 0; }
+.payment-step .form-submit { margin-top: .5rem; }
 .payment-step input:disabled { opacity: .7; }
 .payment-step button:disabled { opacity: .65; cursor: wait; }
+.payment-step .restart-button + .restart-button { margin-top: 12px; }
+.payment-confirm {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 15px;
+  border: 1px solid #e3c9c4;
+  border-radius: 2px;
+  background: #fdf3f1;
+}
+.payment-confirm p {
+  max-width: none;
+  margin: 0 0 10px;
+  color: #6b3a32;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.payment-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.payment-confirm .restart-button { margin-top: 0; }

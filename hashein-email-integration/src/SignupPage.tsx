@@ -38,6 +38,8 @@ export default function SignupPage() {
 
   return (
     <>
+      <a className="skip-link" href="#main">Skip to content</a>
+
       <header className={`site-header site-header--solid${scrolled ? " site-header--scrolled" : ""}`}>
         <div className="page-container header-inner">
           <Brand href={home} />
