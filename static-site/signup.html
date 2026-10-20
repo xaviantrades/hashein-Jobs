@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d2931">
+  <meta name="description" content="Begin your Hashein Uganda job opportunity enquiry.">
+  <title>Sign up — Hashein Uganda</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/site.js" defer></script>
+</head>
+<body class="signup-body">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header solid-header"><div class="container header-inner"><a class="brand" href="index.html"><span class="brand-mark">H</span><span><strong>hashein</strong><small>UGANDA</small></span></a><a class="button button-small button-lime" href="index.html">← Back to home</a></div></header>
+<main id="main" class="signup-main">
+  <section class="signup-intro"><p class="eyebrow light">SIGN UP</p><h1>Let's make a move<span class="lime-dot">.</span></h1><p>Tell us about the work you're looking for. Review your details before continuing to payment.</p><div class="side-contact"><span>Prefer a conversation?</span><a href="tel:+256780611480">Call +256 780 611 480 ↗</a></div><div class="safety-note"><strong>A quick note</strong><p>Roles and visas are not guaranteed. Do not enter national ID or passport numbers in this form.</p></div></section>
+  <section class="form-panel" id="application-form">
+    <div class="form-topline"><span>APPLICATION ENQUIRY</span><span id="step-count">STEP 01 / 02</span></div><div class="progress"><span id="progress-bar"></span></div>
+    <div id="form-status" class="status" role="status" aria-live="polite" hidden></div>
+    <form id="application-form-fields" novalidate>
+      <section class="form-step" data-step="1"><h2>The opportunity</h2><p class="muted">Where are you from, and what kind of work are you looking for?</p>
+        <div class="form-grid">
+          <label>Country of origin <span>*</span><select id="origin" required><option value="">Select your country</option><optgroup label="East Africa"><option>Uganda</option><option>Kenya</option><option>Tanzania</option><option>Rwanda</option><option>Burundi</option><option>South Sudan</option><option>Ethiopia</option><option>Somalia</option><option>Djibouti</option><option>Eritrea</option></optgroup><optgroup label="Other African countries"><option>Algeria</option><option>Angola</option><option>Benin</option><option>Botswana</option><option>Burkina Faso</option><option>Cameroon</option><option>Central African Republic</option><option>Chad</option><option>Egypt</option><option>Eswatini</option><option>Gabon</option><option>Gambia</option><option>Ghana</option><option>Guinea</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Madagascar</option><option>Malawi</option><option>Mali</option><option>Mauritius</option><option>Morocco</option><option>Mozambique</option><option>Namibia</option><option>Niger</option><option>Nigeria</option><option>Senegal</option><option>Sierra Leone</option><option>South Africa</option><option>Sudan</option><option>Togo</option><option>Tunisia</option><option>Zambia</option><option>Zimbabwe</option></optgroup><option value="Other country">Other country</option></select></label>
+          <label id="other-origin-wrap" class="wide" hidden>Please specify your country <span>*</span><input id="otherOrigin" maxlength="80" placeholder="Your country of origin"></label>
+          <label>Preferred destination <span>*</span><select id="destination" required><option value="">Where would you like to work?</option><option value="United Arab Emirates">United Arab Emirates</option><option>Qatar</option><option>Saudi Arabia</option><option>Oman</option><option>China</option><option>Turkey</option><option value="Other Middle Eastern destination">Other Middle Eastern destinations</option><option>Open to suitable destinations</option></select></label>
+          <label>Work category <span>*</span><select id="category" required><option value="">Choose a field</option><option>Office & professional</option><option>Construction & trades</option><option>Hospitality & care</option><option>Transport & logistics</option><option>Industry & manufacturing</option><option>Specialist & other roles</option></select></label>
+          <label>Preferred role <span>*</span><select id="role" required disabled><option value="">Choose a field first</option></select></label>
+          <label id="other-role-wrap" class="wide" hidden>Tell us your preferred role <span>*</span><input id="otherRole" maxlength="100" placeholder="e.g. Graphic designer"></label>
+          <label>Highest qualification <span>*</span><select id="education" required><option value="">Choose your qualification</option><option>S.4 / O-Level certificate</option><option>S.6 / A-Level certificate</option><option>Vocational or trade certificate</option><option>Professional certificate</option><option>Diploma</option><option>Bachelor's degree</option><option>Master's degree or higher</option><option>Practical experience / other</option></select></label>
+          <label>Work experience <span>*</span><select id="yearsExperience" required><option value="">Select your experience</option><option>Just starting out</option><option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option><option>6 years or more</option></select></label>
+        </div>
+        <div class="form-actions"><a class="text-link" href="index.html">Cancel</a><button class="button button-dark" type="button" id="to-step-2">Continue →</button></div>
+      </section>
+      <section class="form-step" data-step="2" hidden><h2>A little about you</h2><p class="muted">How can our team reach you? Fields marked * are required.</p>
+        <div class="form-grid">
+          <label class="wide">Full name <span>*</span><input id="fullName" autocomplete="name" required minlength="2" maxlength="100" placeholder="Your name as it appears on your ID"></label>
+          <label>Phone <span>*</span><input id="phone" type="tel" autocomplete="tel" required minlength="7" maxlength="25" placeholder="Include country code"></label>
+          <label>Email <span>*</span><input id="email" type="email" autocomplete="email" required maxlength="120" placeholder="you@example.com"></label>
+          <label>Date of birth <span>*</span><input id="dateOfBirth" type="date" required></label>
+          <label>Passport status <span>*</span><select id="passport" required><option value="">Select one</option><option>I have a valid passport</option><option>I am applying for a passport</option><option>I need help getting a passport</option></select></label>
+          <label class="wide">Tell us about your experience <small>OPTIONAL</small><textarea id="experience" rows="3" maxlength="500" placeholder="A little about the work you have done or what you would like to do"></textarea></label>
+          <p class="privacy wide">Please do not enter national ID or passport numbers here. Our team will discuss any documents needed directly with you.</p>
+          <label class="consent wide"><input id="consent" type="checkbox" required><span>I agree that my details may be sent to Hashein Uganda by email to process this application, and understand that roles and visas depend on eligibility and approval. *</span></label>
+        </div>
+        <div class="form-actions"><button class="text-button" type="button" id="back-to-step-1">← Back</button><button class="button button-dark" type="submit" id="send-summary">Email my details ↗</button></div>
+      </section>
+    </form>
+    <section id="review-step" class="form-step" hidden><p class="eyebrow">CHECK YOUR EMAIL</p><h2>Review your application details</h2><p id="review-message" class="status" role="status"></p><p>Open the summary email and check the details carefully. When you have reviewed them, continue below. This click confirms your review but does not independently verify ownership of the email address.</p><div class="form-actions stacked"><button class="button button-dark" type="button" id="continue-to-payment" disabled>I've reviewed my email — continue to payment ↗</button><button class="text-button" type="button" id="edit-details">← Back to application details</button></div></section>
+    <section id="payment-step" class="form-step" hidden><p class="eyebrow">APPLICATION FEE</p><h2>Complete your application</h2><p>Your application fee is a fixed <strong>UGX 5,000</strong>. Enter the MTN or Airtel Uganda number that should receive the payment prompt.</p><label class="payment-phone">Mobile Money number <span>*</span><input id="paymentPhone" type="tel" autocomplete="tel" placeholder="0771234567 or +256771234567" required></label><div class="fee-row"><span>Application fee</span><strong>UGX 5,000</strong></div><p id="payment-status" class="status" role="status" aria-live="polite" hidden></p><p id="payment-reference" class="muted" hidden></p><button class="button button-dark full" type="button" id="pay-submit">Pay UGX 5,000 & submit ↗</button><button class="text-button" type="button" id="back-to-details">← Back to application</button><div id="new-payment-warning" class="warning" hidden><p>Only start a new payment if you have not already been charged. You may otherwise be charged twice.</p><button class="button button-outline" type="button" id="confirm-new-payment">I have not been charged — start again</button><button class="text-button" type="button" id="cancel-new-payment">Cancel</button></div></section>
+    <section id="success-step" class="form-step" hidden><div class="success-icon">✓</div><p class="eyebrow">APPLICATION RECEIVED</p><h2>Thank you for applying.</h2><p id="success-message">Your application was submitted successfully.</p><div class="fee-row"><span>Application ID</span><strong id="success-id"></strong></div><p class="muted">A confirmation email should arrive shortly. If you need help, call +256 780 611 480.</p><a class="button button-dark full" href="index.html">Back to home ↗</a></section>
+  </section>
+</main>
+<footer class="footer"><div class="container footer-inner"><a class="brand" href="index.html"><span class="brand-mark">H</span><span><strong>hashein</strong><small>UGANDA</small></span></a><span>© <span id="year"></span> Hashein Uganda. All rights reserved.</span><a href="tel:+256780611480">+256 780 611 480</a></div></footer>
+</body>
+</html>
