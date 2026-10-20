@@ -1,8 +1,88 @@
-@import "tailwindcss";
+/* ---------- Minimal reset (replaces the Tailwind preflight) ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+b, strong {
+  font-weight: bolder;
+}
+
+ol, ul, menu {
+  list-style: none;
+}
+
+img, svg, video, canvas, audio, iframe, embed, object {
+  display: block;
+  vertical-align: middle;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, select, optgroup, textarea {
+  font: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+button, [type="button"], [type="reset"], [type="submit"] {
+  appearance: button;
+  cursor: pointer;
+}
+
+::placeholder {
+  opacity: 1;
+}
+
+fieldset {
+  min-width: 0;
+  min-inline-size: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Keeps [hidden] working even where a component sets display. */
+[hidden] {
+  display: none !important;
+}
+
 
 @font-face {
   font-family: "Manrope";
-  src: url("./assets/manrope-latin.woff2") format("woff2");
+  src: url("../assets/fonts/manrope-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 400 800;
   font-display: swap;
@@ -10,7 +90,7 @@
 
 @font-face {
   font-family: "DM Sans";
-  src: url("./assets/dm-sans-latin.woff2") format("woff2");
+  src: url("../assets/fonts/dm-sans-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 400 800;
   font-display: swap;
@@ -2241,7 +2321,7 @@ section[id] {
   }
 }
 /* ---------- Mobile menu ----------
-   The menu is now a sibling of the header (see App.tsx), so it's positioned against the
+   The menu is a sibling of the header (see index.html), so it's positioned against the
    viewport and always shows in full. */
 .site-header--menu-open {
   backdrop-filter: none;
@@ -2380,3 +2460,148 @@ section[id] {
   gap: 8px 22px;
 }
 .payment-confirm .restart-button { margin-top: 0; }
+
+/* ==========================================================================
+   Interaction styles for the framework-free build
+   The React version animated these with framer-motion; here they are plain
+   CSS transitions driven by classes that js/site.js and js/signup.js toggle.
+   ========================================================================== */
+
+/* Scroll-in reveals (was <Reveal>). .js is added by the inline script in the
+   <head>, so content stays visible if JavaScript never runs. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero entrance (was motion.h1 / motion.div). */
+.js .hero-title--enter {
+  animation: hero-title-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.js .hero-copy__enter {
+  animation: hero-copy-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+@keyframes hero-title-in {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hero-copy-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Category panel swap (was AnimatePresence mode="wait"). */
+.roles-panel__content {
+  opacity: 1;
+  transform: none;
+}
+
+.roles-panel__content.is-swapping {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.js .roles-panel__content.is-entering {
+  animation: roles-panel-in 0.23s ease both;
+}
+
+@keyframes roles-panel-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Mobile navigation (was a framer-motion nav with AnimatePresence). */
+.mobile-nav {
+  opacity: 0;
+  transform: translateY(-14px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.mobile-nav.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.menu-toggle__close {
+  display: none;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__open {
+  display: none;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__close {
+  display: block;
+}
+
+/* FAQ accordion (was AnimatePresence height auto). */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+
+.faq-answer > div {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s linear 0.28s;
+}
+
+.faq-item.is-open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-item.is-open .faq-answer > div {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* The form is split into fieldsets so the browser only validates the
+   visible step; inactive steps are disabled as well as hidden. */
+.form-step {
+  border: 0;
+}
+
+.form-step[hidden] {
+  display: none;
+}
+
+/* Payment step sits inside the light panel. */
+.payment-step .payment-status[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal,
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .js .hero-title--enter,
+  .js .hero-copy__enter,
+  .js .roles-panel__content.is-entering {
+    animation: none;
+  }
+
+  .mobile-nav,
+  .faq-answer,
+  .roles-panel__content,
+  .faq-answer > div {
+    transition: none;
+  }
+}
