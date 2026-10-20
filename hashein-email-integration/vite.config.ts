@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 // https://vite.dev/config/
 // Two pages: the homepage (index.html) and the sign-up form (signup.html).
 export default defineConfig({
+  base: "/hashein-Jobs/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
