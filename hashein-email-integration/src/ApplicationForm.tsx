@@ -50,6 +50,8 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
   // retrying skips /collect-money so an applicant can never be charged twice.
   const [confirmedReference, setConfirmedReference] = useState("");
   const [paymentState, setPaymentState] = useState<"idle" | "starting" | "waiting" | "submitting" | "done" | "error">("idle");
+  const [summaryEmailState, setSummaryEmailState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [summaryEmailMessage, setSummaryEmailMessage] = useState("");
   const [paymentMessage, setPaymentMessage] = useState("");
   const [applicationId, setApplicationId] = useState("");
   const [isPaying, setIsPaying] = useState(false);
@@ -105,6 +107,23 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
     if (!response.ok) throw new Error(`Email delivery failed (${response.status}).`);
   }
 
+  function applicationSummaryEmailHtml() {
+    const fields: Array<[string, string]> = [
+      ["Full name", application.fullName],
+      ["Email", application.email],
+      ["Phone", application.phone],
+      ["Country of origin", application.origin === "Other country" ? application.otherOrigin : application.origin],
+      ["Preferred destination", application.destination],
+      ["Work category", application.category],
+      ["Preferred role", application.role === OTHER_ROLE ? application.otherRole : application.role],
+      ["Highest qualification", application.education],
+      ["Work experience", application.yearsExperience],
+      ["Passport status", application.passport],
+      ["Additional experience", application.experience || "Not provided"],
+    ];
+    return `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#17252b"><h2>Your Hashein Uganda application summary</h2><p>Hello ${emailSafe(application.fullName)},</p><p>Here is a summary of the details you entered. Please review them and then return to the application page to confirm that you have checked them before continuing to payment.</p><table style="border-collapse:collapse;width:100%">${fields.map(([label, value]) => `<tr><th align="left" style="padding:8px;border:1px solid #ddd">${emailSafe(label)}</th><td style="padding:8px;border:1px solid #ddd">${emailSafe(value)}</td></tr>`).join("")}</table><p>If anything is incorrect, return to the application form and correct it before payment.</p><p>Thank you,<br>Hashein Uganda</p></div>`;
+  }
+
   async function handleApplicationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (formStep === 1) {
@@ -114,10 +133,28 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
       }), 30);
       return;
     }
+    if (formStep === 2) {
+      setSummaryEmailState("sending");
+      setSummaryEmailMessage("Sending a summary of your application to your email…");
+      try {
+        await sendEmail(
+          application.email.trim(),
+          "Your Hashein Uganda Application Details",
+          applicationSummaryEmailHtml()
+        );
+        setSummaryEmailState("sent");
+        setSummaryEmailMessage(`Application summary sent to ${application.email.trim()}. Check your inbox or spam folder, review your details, then confirm below.`);
+        setFormStep(3);
+      } catch (error) {
+        setSummaryEmailState("error");
+        setSummaryEmailMessage(error instanceof Error ? error.message : "We could not send your application summary. Please try again.");
+      }
+      return;
+    }
     setPaymentState("idle");
     setPaymentMessage("");
     setConfirmNewPayment(false);
-    setFormStep(3);
+    setFormStep(4);
   }
 
   function normalizeUgandaPhone(value: string) {
@@ -316,7 +353,7 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
                   <p><strong>Payment reference:</strong> {paymentReference}</p>
                   <button className="restart-button" type="button" onClick={resetApplication}>Start another application <ArrowRight size={16} aria-hidden="true" /></button>
                 </div>
-              ) : formStep === 3 ? (
+              ) : formStep === 4 ? (
                 <form
                   className="application-confirmation payment-step"
                   onSubmit={(event) => { event.preventDefault(); void payAndSubmit(); }}
@@ -350,6 +387,16 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
                   )}
                   <button className="restart-button" type="button" disabled={isPaying} onClick={() => { setPaymentState("idle"); setPaymentMessage(""); setConfirmNewPayment(false); setFormStep(2); }}>Back to application <ArrowRight size={16} aria-hidden="true" /></button>
                 </form>
+              ) : formStep === 3 ? (
+                <div className="application-confirmation review-step" role="status" aria-live="polite">
+                  <span className="form-eyebrow">CHECK YOUR EMAIL</span>
+                  <h3>Review your application details</h3>
+                  <p>{summaryEmailMessage}</p>
+                  <p>Open the email sent to <strong>{application.email}</strong> and check the summary carefully. This is a manual review step; clicking below confirms that you have reviewed the details, but does not independently verify ownership of the email address.</p>
+                  {summaryEmailState === "error" && <button className="button button--dark form-submit" type="button" onClick={() => { setSummaryEmailState("idle"); setSummaryEmailMessage(""); setFormStep(2); }}>Return to form and retry email <ArrowRight size={18} aria-hidden="true" /></button>}
+                  <button className="button button--dark form-submit" type="button" disabled={summaryEmailState !== "sent"} onClick={() => { setPaymentState("idle"); setPaymentMessage(""); setConfirmNewPayment(false); setFormStep(4); }}>I've reviewed my email — continue to payment <ArrowUpRight size={18} aria-hidden="true" /></button>
+                  <button className="restart-button" type="button" onClick={() => { setSummaryEmailState("idle"); setSummaryEmailMessage(""); setFormStep(2); }}>Back to application details <ArrowRight size={16} aria-hidden="true" /></button>
+                </div>
               ) : (
                 <>
                   <div className="form-topline"><span>APPLICATION ENQUIRY</span><span>STEP 0{formStep} / 02</span></div>
