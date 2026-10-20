@@ -1,5 +1,5 @@
 // Replace this placeholder with the Hashein Uganda business email before deployment.
-export const ADMIN_EMAIL = "YOUR_EMAIL_HERE@example.com";
+export const ADMIN_EMAIL = "geraldsaviour623@gmail.com";
 // Used to hide broken mailto: links while the placeholder is still configured.
 export const hasAdminEmail = !ADMIN_EMAIL.includes("YOUR_EMAIL_HERE");
 export const EMAIL_WORKER_URL = "https://round-smoke-cd6a.geraldsaviour623.workers.dev";
