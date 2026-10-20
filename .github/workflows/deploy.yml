@@ -1,10 +1,13 @@
-name: Deploy Hashein Jobs to GitHub Pages
+name: Deploy Hashein Jobs static site to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
-      - "hashein-email-integration/**"
+      - "static-site/**"
+      - "hashein-email-integration/public/images/**"
+      - "hashein-email-integration/public/favicon.svg"
+      - "hashein-email-integration/src/assets/*.woff2"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -24,25 +27,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: hashein-email-integration/package-lock.json
-
-      - name: Install dependencies
-        working-directory: hashein-email-integration
-        run: npm ci
-
-      - name: Build website
-        working-directory: hashein-email-integration
-        run: npm run build
+      - name: Copy static assets
+        run: |
+          mkdir -p static-site/assets
+          cp hashein-email-integration/public/images/hashein-hero.jpg static-site/assets/
+          cp hashein-email-integration/public/images/hashein-skills.jpg static-site/assets/
+          cp hashein-email-integration/public/favicon.svg static-site/assets/
+          cp hashein-email-integration/src/assets/dm-sans-latin.woff2 static-site/assets/
+          cp hashein-email-integration/src/assets/manrope-latin.woff2 static-site/assets/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: hashein-email-integration/dist
+          path: static-site
 
   deploy:
     environment:
