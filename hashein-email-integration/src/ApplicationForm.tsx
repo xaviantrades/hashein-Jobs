@@ -498,7 +498,7 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
                     <div className="form-actions">
                       {formStep === 2 && <button className="form-back" type="button" onClick={() => setFormStep(1)}><ArrowRight size={16} aria-hidden="true" /> Back</button>}
                       <button className="button button--dark form-submit" type="submit">
-                        {formStep === 1 ? "Continue" : "Continue to payment"}
+                        {formStep === 1 ? "Continue" : "Continue"}
                         {formStep === 1 ? <ArrowRight size={19} aria-hidden="true" /> : <ArrowUpRight size={19} aria-hidden="true" />}
                       </button>
                     </div>
