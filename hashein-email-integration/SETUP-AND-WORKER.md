@@ -1,10 +1,18 @@
 # Hashein Uganda application fee update
 
 ## Frontend flow
-- The application form now moves from details to a fixed UGX 5,000 mobile-money payment.
-- It starts payment with the existing MarzPay `/collect-money` endpoint and polls `/payment-status/:reference`.
-- Only after the browser sees a paid status does it POST the form to `/submit-application`.
-- A success screen is shown only when the server returns an `applicationId`.
+- Applicants complete the two application-form sections. The second section's button is labelled **Continue**.
+- When they continue, the app emails a summary to the email address they entered. The email subject is **Your Hashein Uganda Application Details**; it does not use the heading “Verify your form submission.”
+- A manual review screen asks applicants to check their inbox and confirm on the website that they reviewed the summary. This is a manual acknowledgement, not proof of ownership of the email address.
+- After acknowledgement, applicants can proceed to the fixed UGX 5,000 mobile-money payment.
+- The app polls MarzPay `/payment-status/:reference`, then POSTs the application to `/submit-application` after a paid status is observed.
+- After the server returns a successful application ID, the app attempts to email the full submitted application and payment reference to the administrator, and a success message with application ID and payment reference to the applicant.
+
+## Email configuration and limitations
+- The administrator email is configured in `src/content.ts` as `geraldsaviour623@gmail.com`.
+- The frontend sends `{ to, subject, html }` to `https://round-smoke-cd6a.geraldsaviour623.workers.dev`. Ensure that Worker accepts this POST format, allows requests from the deployed site with CORS, and stores email-provider credentials as Worker secrets—not in browser JavaScript.
+- Email delivery is initiated by the browser. The UI checks the HTTP response from the email Worker, but that does not independently prove final inbox delivery. For stronger reliability, move all email sending behind a server endpoint and add delivery logging, recipient validation, rate limiting, and restricted CORS.
+- The pre-payment summary contains a summary of application details, not payment information. The administrator notification and applicant success email are attempted only after the application server returns success.
 
 ## Required server-side step
 The browser code is not, by itself, server validation. Merge `server/submit-application-route.js` into the existing Cloudflare Worker that serves `marzpay-api.investinginaionline.workers.dev`, routing `POST /submit-application` to `handleSubmitApplication(request, env)`. Bind a KV namespace as `APPLICATIONS_KV`.
@@ -20,12 +28,3 @@ The frontend expects:
 - `POST /submit-application` → `{ status: "success", applicationId: "HAS-..." }`
 
 The uploaded MarzPay page originally accepted a user-editable amount. The updated `marzpay.html` uses a fixed UGX 5,000 display and sends 5000 from JavaScript, but **the Worker must also enforce the amount server-side** in `/collect-money`; never rely on a hidden field or JavaScript constant for price security.
-
-
-## Email notifications
-- The form sends the applicant an email titled **“Verify your form submission”** when they finish entering the form and continue to payment.
-- The same application details are sent to the configured Hashein Uganda inbox.
-- After the server confirms the UGX 5,000 payment and records the application, a second email confirms successful submission to the applicant.
-- In `src/content.ts`, replace `YOUR_EMAIL_HERE@example.com` with the real Hashein Uganda email address. This same address is used by the contact section.
-- The frontend sends `{ to, subject, html }` to `https://round-smoke-cd6a.geraldsaviour623.workers.dev`. Ensure that Worker accepts this POST format, allows requests from the deployed site with CORS, and has its email provider credentials stored as Worker secrets—not in browser JavaScript.
-- The email request is made from the browser, so the email Worker should validate recipients, rate-limit requests, and restrict CORS. For stronger abuse protection, move pre-payment notification delivery behind a server endpoint.
