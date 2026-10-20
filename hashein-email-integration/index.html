@@ -4,21 +4,423 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0d2931" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <meta name="description" content="Hashein Uganda connects job seekers across East Africa and beyond with opportunities in the UAE, Middle East, China and Turkey. Explore roles and enquire online." />
     <meta property="og:title" content="Hashein Uganda | A World of Work Is Within Reach" />
     <meta property="og:description" content="Explore overseas work opportunities, learn about requirements, and connect directly with Hashein Uganda." />
     <meta property="og:type" content="website" />
     <title>Hashein Uganda | Work Beyond Borders</title>
+    <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script>document.documentElement.classList.add("js");</script>
+    <script src="js/data.js" defer></script>
+    <script src="js/site.js" defer></script>
+    <script src="js/main.js" defer></script>
   </head>
   <body>
-    <div id="root"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header="auto">
+      <div class="page-container header-inner">
+        <a class="brand" href="#top" aria-label="Hashein Uganda home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 42 42" fill="none">
+              <path d="M9 8V34M33 8V34M9 21H33" stroke="currentColor" stroke-width="4" stroke-linecap="square" />
+              <path d="M25 13L33 21" stroke="currentColor" stroke-width="4" stroke-linecap="square" />
+            </svg>
+          </span>
+          <span class="brand-wordmark">
+            <strong>HASHEIN</strong>
+            <span>UGANDA</span>
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Main navigation">
+          <a href="#about">Our story</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="#process">How it works</a>
+          <a href="#faqs">FAQs</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <a class="header-cta" href="signup.html">
+          Sign up
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-navigation">
+          <svg class="menu-toggle__open" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="M4 6h16" /><path d="M4 18h16" /></svg>
+          <svg class="menu-toggle__close" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav id="mobile-navigation" class="mobile-nav" aria-label="Mobile navigation" hidden>
+      <a href="#about"><span>01</span>Our story<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+      <a href="#opportunities"><span>02</span>Opportunities<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+      <a href="#process"><span>03</span>How it works<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+      <a href="#faqs"><span>04</span>FAQs<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+      <a href="#contact"><span>05</span>Contact<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+      <a class="mobile-nav-apply" href="signup.html">
+        Sign up
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </a>
+    </nav>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/images/hashein-hero.jpg" alt="A professional traveler walking through a modern airport" fetchpriority="high" />
+        <div class="hero-overlay" aria-hidden="true"></div>
+
+        <div class="page-container hero-inner">
+          <div class="hero-copy">
+            <h1 id="hero-title" class="hero-title hero-title--enter">Hashein<br />Uganda<span>.</span></h1>
+
+            <div class="hero-copy__enter">
+              <p class="hero-headline">A world of work is within reach.</p>
+              <p class="hero-description">
+                Connecting people from East Africa and beyond with opportunities in the UAE, the Middle East, China and Turkey.
+              </p>
+              <div class="hero-actions">
+                <a class="button button--accent" href="signup.html">
+                  Sign up
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 13.292-6" /><circle cx="10" cy="8" r="5" /><path d="M19 16v6" /><path d="M22 19h-6" /></svg>
+                </a>
+                <a class="hero-text-link" href="#opportunities">
+                  Explore opportunities
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg>
+                </a>
+                <a class="hero-text-link" href="#process">
+                  How it works
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro-section section-pad" id="about" aria-labelledby="intro-title">
+        <div class="page-container intro-grid">
+          <div class="reveal">
+            <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>THE CONNECTION</p>
+            <h2 class="section-heading intro-heading" id="intro-title">
+              Good work shouldn't have borders<span class="heading-dot">.</span>
+            </h2>
+          </div>
+          <div class="intro-aside reveal" data-reveal-delay="0.12">
+            <p class="intro-lead">Your ability matters. So does having someone to help you take it further.</p>
+            <p>
+              Hashein Uganda is a UAE-based recruitment company connecting job seekers in Uganda, across East Africa and beyond with employers overseas. From finding the right field to understanding the paperwork, we're here to help you navigate what comes next.
+            </p>
+            <a class="text-link" href="#process">
+              Get to know our approach
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="opportunities-section section-pad" id="opportunities" aria-labelledby="opportunities-title">
+        <div class="page-container">
+          <div class="section-head">
+            <div class="reveal">
+              <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>OPPORTUNITIES</p>
+              <h2 class="section-heading" id="opportunities-title">There's a place for your skills<span class="heading-dot">.</span></h2>
+            </div>
+            <div class="section-head-description reveal" data-reveal-delay="0.12">
+              <p>Explore the fields we recruit for. Select a role to begin an enquiry; specific openings depend on employer needs.</p>
+            </div>
+          </div>
+
+          <div class="opportunity-browser">
+            <div class="category-tabs" id="category-tabs" role="tablist" aria-label="Work categories" aria-orientation="vertical"></div>
+            <div class="roles-panel" id="roles-panel" role="tabpanel" aria-labelledby="category-tab-office">
+              <div class="roles-panel__content" id="roles-content"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="destinations-section section-pad" id="destinations" aria-labelledby="destinations-title">
+        <div class="destination-rings" aria-hidden="true"></div>
+        <div class="page-container destinations-grid">
+          <div class="destinations-intro reveal">
+            <p class="section-label section-label--light"><span class="section-label-line" aria-hidden="true"></span>WHERE WE CONNECT</p>
+            <h2 class="section-heading section-heading--light" id="destinations-title">Your next chapter could begin somewhere new<span class="heading-dot">.</span></h2>
+            <p>Based in the UAE and rooted in East Africa, we connect candidates with potential opportunities across these destinations.</p>
+          </div>
+          <div class="destination-list reveal" data-reveal-delay="0.13">
+            <button type="button" class="destination-item" data-destination="United Arab Emirates" aria-label="Enquire about opportunities in United Arab Emirates">
+              <span class="destination-name">United Arab Emirates<span class="destination-detail">Dubai and other emirates</span></span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="Qatar" aria-label="Enquire about opportunities in Qatar">
+              <span class="destination-name">Qatar</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="Saudi Arabia" aria-label="Enquire about opportunities in Saudi Arabia">
+              <span class="destination-name">Saudi Arabia</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="Oman" aria-label="Enquire about opportunities in Oman">
+              <span class="destination-name">Oman</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="China" aria-label="Enquire about opportunities in China">
+              <span class="destination-name">China</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="Turkey" aria-label="Enquire about opportunities in Turkey">
+              <span class="destination-name">Turkey</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+            <button type="button" class="destination-item" data-destination="Other Middle Eastern destination" aria-label="Enquire about opportunities in Other Middle Eastern destinations">
+              <span class="destination-name">Other Middle Eastern destinations</span>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="process-section section-pad" id="process" aria-labelledby="process-title">
+        <div class="page-container">
+          <div class="process-header reveal">
+            <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>HOW IT WORKS</p>
+            <h2 class="section-heading" id="process-title">A clearer path forward<span class="heading-dot">.</span></h2>
+            <p>One step at a time, from your first enquiry to understanding what comes next.</p>
+          </div>
+          <div class="process-list">
+            <div class="process-row reveal">
+              <span class="process-number">01</span>
+              <h3>Explore what fits</h3>
+              <p>Browse the fields we recruit for and choose a role and destination that interest you.</p>
+              <svg class="process-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </div>
+            <div class="process-row reveal">
+              <span class="process-number">02</span>
+              <h3>Tell us about you</h3>
+              <p>Select your country of origin and share your qualifications and work experience.</p>
+              <svg class="process-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </div>
+            <div class="process-row reveal">
+              <span class="process-number">03</span>
+              <h3>Have a conversation</h3>
+              <p>Submit your application securely online and receive email updates about its status.</p>
+              <svg class="process-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </div>
+            <div class="process-row reveal">
+              <span class="process-number">04</span>
+              <h3>Prepare to move forward</h3>
+              <p>If there is a suitable opportunity, we can guide you through documents, passports and visa processing.</p>
+              <svg class="process-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </div>
+          </div>
+          <p class="process-note">All opportunities are subject to employer selection and applicable immigration requirements.</p>
+        </div>
+      </section>
+
+      <section class="requirements-section" id="requirements" aria-labelledby="requirements-title">
+        <div class="requirements-photo">
+          <img src="assets/images/hashein-skills.jpg" alt="A skilled construction professional at work on a building site" loading="eager" />
+        </div>
+        <div class="requirements-content">
+          <div class="reveal">
+            <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>BEFORE YOU APPLY</p>
+            <h2 class="section-heading" id="requirements-title">Start with what you have<span class="heading-dot">.</span></h2>
+            <p class="requirements-intro">There's no one-size-fits-all qualification. What you need depends on the work you want to do.</p>
+          </div>
+
+          <div class="requirements-block reveal" data-reveal-delay="0.08">
+            <h3>Qualifications</h3>
+            <p>We consider a range of backgrounds: S.4 and S.6 certificates for Ugandan applicants, vocational and professional certificates, diplomas, bachelor's and master's degrees, and practical experience for suitable roles.</p>
+          </div>
+
+          <div class="requirements-block reveal" data-reveal-delay="0.12">
+            <h3>What to have ready</h3>
+            <ul class="document-list">
+              <li>National ID or other valid identification</li>
+              <li>Passport, if you already have one</li>
+              <li>Education or training records when required for the role</li>
+              <li>Your date of birth and basic personal details</li>
+            </ul>
+          </div>
+
+          <div class="passport-help reveal" data-reveal-delay="0.16">
+            <h3>No passport or visa yet?</h3>
+            <p>You can still start here. Our team can advise eligible applicants on passport applications and visa processing. Final approvals are made by the relevant authorities.</p>
+            <a class="text-link" href="signup.html">Sign up now <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="application-section section-pad" id="signup" aria-labelledby="application-title">
+        <div class="page-container signup-cta">
+          <div class="application-intro reveal">
+            <p class="section-label section-label--light"><span class="section-label-line" aria-hidden="true"></span>YOUR NEXT STEP</p>
+            <h2 class="section-heading section-heading--light" id="application-title">Let's make a move<span class="heading-dot">.</span></h2>
+            <p>Tell us about the work you're looking for. Complete the online form and receive email updates from the Hashein Uganda team.</p>
+          </div>
+          <div class="signup-cta-actions reveal" data-reveal-delay="0.12">
+            <a class="button button--accent" href="signup.html">
+              Sign up
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 13.292-6" /><circle cx="10" cy="8" r="5" /><path d="M19 16v6" /><path d="M22 19h-6" /></svg>
+            </a>
+            <div class="application-side-contact">
+              <span>Prefer a conversation?</span>
+              <a href="tel:+256780611480">Call +256 780 611 480 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section section-pad" id="faqs" aria-labelledby="faq-title">
+        <div class="page-container faq-grid">
+          <div class="faq-intro reveal">
+            <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>GOOD TO KNOW</p>
+            <h2 class="section-heading" id="faq-title">Questions? Let's clear things up<span class="heading-dot">.</span></h2>
+            <p>Here are a few things people often ask before taking the first step.</p>
+          </div>
+          <div class="faq-list">
+            <div class="faq-item is-open">
+              <button type="button" class="faq-question" id="faq-question-0" aria-expanded="true" aria-controls="faq-answer-0">
+                <span>Can I apply if I don't have a passport yet?</span>
+                <svg class="faq-plus faq-plus--open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-0" role="region" aria-labelledby="faq-question-0">
+                <div><p>Yes. You can make an initial enquiry with your national ID. If a suitable opportunity is available, our team can explain the passport application process and any applicable visa steps. A passport is not required to complete this first form.</p></div>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button type="button" class="faq-question" id="faq-question-1" aria-expanded="false" aria-controls="faq-answer-1">
+                <span>Do I need a university degree to apply?</span>
+                <svg class="faq-plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1">
+                <div><p>No. Opportunities may suit people with S.4 or S.6 certificates, vocational or professional certificates, diplomas, bachelor's or master's degrees, or relevant practical experience. Each employer and role has its own requirements.</p></div>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button type="button" class="faq-question" id="faq-question-2" aria-expanded="false" aria-controls="faq-answer-2">
+                <span>Can I apply if I am not from Uganda?</span>
+                <svg class="faq-plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2">
+                <div><p>Yes. Hashein Uganda works with candidates from across Africa, particularly East Africa, and can consider enquiries from other countries. Select your country of origin in the application form so we can understand your situation.</p></div>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button type="button" class="faq-question" id="faq-question-3" aria-expanded="false" aria-controls="faq-answer-3">
+                <span>What documents will I need?</span>
+                <svg class="faq-plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3">
+                <div><p>Usually a national ID, your birth details, and education or training documents if the role requires them. A passport is helpful if you have one, but you can still enquire without it. Please do not send ID or passport numbers through the website form; our team will explain document requirements directly.</p></div>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button type="button" class="faq-question" id="faq-question-4" aria-expanded="false" aria-controls="faq-answer-4">
+                <span>Is a job or visa guaranteed?</span>
+                <svg class="faq-plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4">
+                <div><p>No. Availability depends on employers and open positions. Selection, documentation and visa approvals depend on the requirements of the employer and the relevant authorities. We will discuss the applicable process with you before you proceed.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section section-pad" id="contact" aria-labelledby="contact-title">
+        <div class="page-container contact-grid">
+          <div class="reveal">
+            <p class="section-label"><span class="section-label-line" aria-hidden="true"></span>LET'S CONNECT</p>
+            <h2 class="section-heading" id="contact-title">It starts with a conversation<span class="heading-dot">.</span></h2>
+            <p>Looking for work, or looking for people? We'd be glad to hear from you.</p>
+          </div>
+          <div class="contact-details reveal" data-reveal-delay="0.12">
+            <span class="contact-mini-label">CALL US DIRECTLY</span>
+            <a class="contact-phone" href="tel:+256780611480">+256 780 611 480 <svg width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></a>
+            <div class="contact-lower">
+              <div>
+                <span class="contact-mini-label">VISIT IN KAMPALA</span>
+                <address>Ham Towers, Plot 220<br />Kampala, Uganda</address>
+                <a class="contact-small-link" href="https://www.google.com/maps/search/?api=1&amp;query=Ham+Towers+Plot+220+Kampala+Uganda" target="_blank" rel="noopener noreferrer">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                  Get directions
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+                </a>
+              </div>
+              <div>
+                <span class="contact-mini-label">MESSAGE US</span>
+                <p>Candidate or employer, our team is just a message away.</p>
+                <a class="contact-small-link" data-admin-email href="#" hidden>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+                  Email Hashein Uganda
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+                </a>
+                <a class="contact-small-link" href="tel:+256780611480">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                  +256 780 611 480
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-container footer-main">
+        <div class="footer-brand">
+          <a class="brand" href="#top" aria-label="Hashein Uganda home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 42 42" fill="none">
+                <path d="M9 8V34M33 8V34M9 21H33" stroke="currentColor" stroke-width="4" stroke-linecap="square" />
+                <path d="M25 13L33 21" stroke="currentColor" stroke-width="4" stroke-linecap="square" />
+              </svg>
+            </span>
+            <span class="brand-wordmark">
+              <strong>HASHEIN</strong>
+              <span>UGANDA</span>
+            </span>
+          </a>
+          <p>Connecting people, possibilities and places.</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <span>EXPLORE</span>
+            <a href="#opportunities">Opportunities</a>
+            <a href="#destinations">Destinations</a>
+            <a href="#process">How it works</a>
+            <a href="#requirements">Requirements</a>
+          </div>
+          <div>
+            <span>GET IN TOUCH</span>
+            <a href="signup.html">Sign up</a>
+            <a href="tel:+256780611480">Call our team</a>
+            <a data-admin-email href="#" hidden>Email us</a>
+            <a href="#contact">Visit us</a>
+            <a href="#faqs">FAQs</a>
+          </div>
+        </div>
+      </div>
+      <div class="page-container footer-bottom">
+        <span>&copy; <span data-current-year>2026</span> Hashein Uganda. All rights reserved.</span>
+        <span>UAE-based recruitment. Kampala-connected.</span>
+        <a href="tel:+256780611480">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+          +256 780 611 480
+        </a>
+      </div>
+    </footer>
+
     <noscript>
-      <p style="padding:24px;font-family:Arial,sans-serif;line-height:1.6">
+      <p style="padding: 24px; font-family: Arial, sans-serif; line-height: 1.6">
         This site needs JavaScript. Please enable JavaScript, or call
         <a href="tel:+256780611480">+256 780 611 480</a>.
       </p>
     </noscript>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

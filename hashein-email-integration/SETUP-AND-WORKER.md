@@ -1,6 +1,8 @@
 # Hashein Uganda application fee update
 
 ## Frontend flow
+The site is plain HTML, CSS and JavaScript — there is no build step. Pages are `index.html`, `signup.html` and the standalone `marzpay.html`; shared content lives in `js/data.js`.
+
 - The application form now moves from details to a fixed UGX 5,000 mobile-money payment.
 - It starts payment with the existing MarzPay `/collect-money` endpoint and polls `/payment-status/:reference`.
 - Only after the browser sees a paid status does it POST the form to `/submit-application`.
@@ -23,9 +25,9 @@ The uploaded MarzPay page originally accepted a user-editable amount. The update
 
 
 ## Email notifications
-- The form sends the applicant an email titled **“Verify your form submission”** when they finish entering the form and continue to payment.
+- After the server confirms the UGX 5,000 payment and records the application, the applicant receives a confirmation email with the application ID and payment reference.
 - The same application details are sent to the configured Hashein Uganda inbox.
-- After the server confirms the UGX 5,000 payment and records the application, a second email confirms successful submission to the applicant.
-- In `src/content.ts`, replace `YOUR_EMAIL_HERE@example.com` with the real Hashein Uganda email address. This same address is used by the contact section.
+- Both emails are sent from `js/signup.js` only after `/submit-application` returns an `applicationId`.
+- In `js/data.js`, replace `YOUR_EMAIL_HERE@example.com` with the real Hashein Uganda email address. While the placeholder is present, team notifications are skipped and the site's email links stay hidden. This same address is used by the contact section.
 - The frontend sends `{ to, subject, html }` to `https://round-smoke-cd6a.geraldsaviour623.workers.dev`. Ensure that Worker accepts this POST format, allows requests from the deployed site with CORS, and has its email provider credentials stored as Worker secrets—not in browser JavaScript.
 - The email request is made from the browser, so the email Worker should validate recipients, rate-limit requests, and restrict CORS. For stronger abuse protection, move pre-payment notification delivery behind a server endpoint.
