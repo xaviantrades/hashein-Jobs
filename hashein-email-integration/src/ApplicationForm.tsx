@@ -3,6 +3,7 @@ import { useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { SelectField } from "./components";
 import {
+  ADMIN_EMAIL,
   EMAIL_WORKER_URL,
   OTHER_ROLE,
   categories,
@@ -14,24 +15,50 @@ import {
   type Application,
 } from "./content";
 
+// Build the date in local time. toISOString() uses UTC, which can reject a
+// birthday that is valid today for applicants a few hours ahead of UTC.
 const adultCutoff = new Date();
 adultCutoff.setFullYear(adultCutoff.getFullYear() - 18);
-const latestBirthDate = adultCutoff.toISOString().slice(0, 10);
+const latestBirthDate = [
+  adultCutoff.getFullYear(),
+  String(adultCutoff.getMonth() + 1).padStart(2, "0"),
+  String(adultCutoff.getDate()).padStart(2, "0"),
+].join("-");
+
+const API_BASE = "https://marzpay-api.investinginaionline.workers.dev";
+const APPLICATION_FEE = 5000;
+// Ugandan mobile numbers are +256 followed by a 9-digit number starting with 7.
+const UGANDA_MOBILE = /^\+2567\d{8}$/;
+
+type ApiResponse = {
+  status?: string;
+  message?: string;
+  applicationId?: string;
+  data?: {
+    reference?: string;
+    status?: string;
+    transaction?: { reference?: string; status?: string };
+  };
+};
 
 export default function ApplicationForm({ initial }: { initial?: Partial<Application> }) {
   const [application, setApplication] = useState<Application>({ ...initialApplication, ...initial });
   const [formStep, setFormStep] = useState(1);
   const [paymentPhone, setPaymentPhone] = useState("");
   const [paymentReference, setPaymentReference] = useState("");
+  // Set only after MarzPay confirms the money was received. While it is set,
+  // retrying skips /collect-money so an applicant can never be charged twice.
+  const [confirmedReference, setConfirmedReference] = useState("");
   const [paymentState, setPaymentState] = useState<"idle" | "starting" | "waiting" | "submitting" | "done" | "error">("idle");
   const [paymentMessage, setPaymentMessage] = useState("");
   const [applicationId, setApplicationId] = useState("");
   const [isPaying, setIsPaying] = useState(false);
-  const API_BASE = "https://marzpay-api.investinginaionline.workers.dev";
-  const APPLICATION_FEE = 5000;
+  const [confirmNewPayment, setConfirmNewPayment] = useState(false);
   const reducedMotion = useReducedMotion();
 
   const applicationCategory = categories.find((category) => category.name === application.category);
+  const hasPendingPayment = Boolean(paymentReference) && !confirmedReference;
+  const paymentAlreadyConfirmed = Boolean(confirmedReference);
 
   function updateApplication<K extends keyof Application>(key: K, value: Application[K]) {
     setApplication((current) => ({ ...current, [key]: value }));
@@ -46,9 +73,9 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
     });
   }
 
-  function applicationEmailHtml(includePayment = false) {
+  function applicationEmailHtml(id: string, reference: string) {
     const fields: Array<[string, string]> = [
-      ["Application ID", applicationId],
+      ["Application ID", id],
       ["Full name", application.fullName],
       ["Email", application.email],
       ["Phone", application.phone],
@@ -61,7 +88,9 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
       ["Date of birth", application.dateOfBirth],
       ["Passport status", application.passport],
       ["Additional experience", application.experience || "Not provided"],
-      ...(includePayment ? [["Payment amount", "UGX 5,000"], ["Payment reference", paymentReference]] as Array<[string, string]> : []),
+      ["Payment amount", "UGX 5,000"],
+      ["Payment reference", reference],
+      ["Mobile-money number", normalizeUgandaPhone(paymentPhone)],
     ];
     return `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#17252b"><h2>Hashein Uganda application</h2><table style="border-collapse:collapse;width:100%">${fields.map(([label, value]) => `<tr><th align="left" style="padding:8px;border:1px solid #ddd">${emailSafe(label)}</th><td style="padding:8px;border:1px solid #ddd">${emailSafe(value)}</td></tr>`).join("")}</table></div>`;
   }
@@ -87,121 +116,191 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
     }
     setPaymentState("idle");
     setPaymentMessage("");
+    setConfirmNewPayment(false);
     setFormStep(3);
   }
 
   function normalizeUgandaPhone(value: string) {
-    const digits = value.replace(/[^0-9]/g, "");
-    if (digits.startsWith("256")) return `+${digits}`;
-    if (digits.startsWith("0")) return `+256${digits.slice(1)}`;
-    return `+256${digits}`;
+    let digits = value.replace(/\D/g, "");
+    if (digits.startsWith("00256")) digits = digits.slice(2);
+    if (digits.startsWith("256")) digits = digits.slice(3);
+    else if (digits.startsWith("0")) digits = digits.slice(1);
+    return `+256${digits.replace(/^0+/, "")}`;
+  }
+
+  async function startPayment(phone: string) {
+    const response = await fetch(`${API_BASE}/collect-money`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: `hashein-${crypto.randomUUID()}`,
+        phone,
+        amount: APPLICATION_FEE,
+        purpose: "hashein_application_fee",
+      }),
+    });
+    const data: ApiResponse | null = await response.json().catch(() => null);
+    if (!response.ok || data?.status !== "success") {
+      throw new Error(data?.message || "Could not start payment. Please try again.");
+    }
+    const reference = data?.data?.transaction?.reference || data?.data?.reference || "";
+    if (!reference) throw new Error("Payment provider did not return a transaction reference.");
+    return reference;
+  }
+
+  // Returns true when MarzPay confirms the money. Transient status-check
+  // failures keep polling instead of abandoning a payment that may be live.
+  async function waitForPayment(reference: string) {
+    for (let attempt = 0; attempt < 60; attempt++) {
+      await new Promise((resolve) => window.setTimeout(resolve, 3000));
+      let data: ApiResponse | null = null;
+      try {
+        const response = await fetch(`${API_BASE}/payment-status/${encodeURIComponent(reference)}`, { cache: "no-store" });
+        if (!response.ok) continue;
+        data = await response.json().catch(() => null);
+      } catch {
+        continue;
+      }
+      if (data?.status !== "success") continue;
+      const status = String(data?.data?.status || data?.data?.transaction?.status || "").toLowerCase();
+      if (["paid", "successful", "completed"].includes(status)) return true;
+      if (["failed", "cancelled", "canceled"].includes(status)) {
+        setPaymentReference("");
+        throw new Error(`Payment ${status}. You can try again.`);
+      }
+    }
+    return false;
+  }
+
+  async function submitApplication(reference: string, phone: string) {
+    const payload = {
+      application: {
+        origin: application.origin === "Other country" ? application.otherOrigin.trim() : application.origin,
+        destination: application.destination,
+        category: application.category,
+        role: application.role === OTHER_ROLE ? application.otherRole.trim() : application.role,
+        education: application.education,
+        yearsExperience: application.yearsExperience,
+        fullName: application.fullName.trim(),
+        phone: application.phone.trim(),
+        email: application.email.trim(),
+        dateOfBirth: application.dateOfBirth,
+        passport: application.passport,
+        experience: application.experience.trim(),
+        consent: application.consent,
+      },
+      paymentReference: reference,
+      paymentPhone: phone,
+      amount: APPLICATION_FEE,
+    };
+    // The server endpoint must independently verify the payment with MarzPay,
+    // enforce UGX 5,000 + paid status, prevent reference reuse and persist the form.
+    const response = await fetch(`${API_BASE}/submit-application`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data: ApiResponse | null = await response.json().catch(() => null);
+    if (!response.ok || data?.status !== "success" || !data.applicationId) {
+      throw new Error(data?.message || "Payment was detected, but the server could not validate and record your application. Contact support with your payment reference.");
+    }
+    return String(data.applicationId);
   }
 
   async function payAndSubmit() {
     if (isPaying) return;
-    const digits = paymentPhone.trim().replace(/\D/g, "");
-    if (digits.length < 9 || digits.length > 13) {
+    setConfirmNewPayment(false);
+    const phone = normalizeUgandaPhone(paymentPhone);
+    if (!UGANDA_MOBILE.test(phone)) {
       setPaymentState("error");
-      setPaymentMessage("Enter a valid MTN or Airtel Uganda mobile-money number.");
+      setPaymentMessage("Enter a valid MTN or Airtel Uganda mobile-money number, for example 0771234567.");
       return;
     }
-    setIsPaying(true);
-    setPaymentState("starting");
-    setPaymentMessage("Starting your UGX 5,000 application fee payment…");
-    try {
-      const startResponse = await fetch(`${API_BASE}/collect-money`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: `hashein-${crypto.randomUUID()}`,
-          phone: normalizeUgandaPhone(paymentPhone),
-          amount: APPLICATION_FEE,
-          purpose: "hashein_application_fee",
-        }),
-      });
-      const startData = await startResponse.json();
-      if (!startResponse.ok || startData.status !== "success") {
-        throw new Error(startData.message || "Could not start payment. Please try again.");
-      }
-      const transaction = startData?.data?.transaction || {};
-      const reference = transaction.reference || startData?.data?.reference || "";
-      if (!reference) throw new Error("Payment provider did not return a transaction reference.");
-      setPaymentReference(reference);
-      setPaymentState("waiting");
-      setPaymentMessage("Payment prompt sent. Approve UGX 5,000 on your phone. Keep this page open.");
 
-      let confirmed = false;
-      for (let attempt = 0; attempt < 60; attempt++) {
-        await new Promise((resolve) => window.setTimeout(resolve, 3000));
-        const statusResponse = await fetch(`${API_BASE}/payment-status/${encodeURIComponent(reference)}`, { cache: "no-store" });
-        const statusData = await statusResponse.json();
-        if (!statusResponse.ok || statusData.status !== "success") continue;
-        const status = String(statusData?.data?.status || "").toLowerCase();
-        if (["paid", "successful", "completed"].includes(status)) { confirmed = true; break; }
-        if (["failed", "cancelled", "canceled"].includes(status)) throw new Error(`Payment ${status}. You can try again.`);
+    setIsPaying(true);
+    let paidReference = confirmedReference;
+    let paymentWasConfirmed = Boolean(confirmedReference);
+    try {
+      if (!paidReference && paymentReference) {
+        // A previous attempt has a reference: check it before charging again.
+        setPaymentState("waiting");
+        setPaymentMessage("Checking the status of your UGX 5,000 payment…");
+        if (!(await waitForPayment(paymentReference))) {
+          throw new Error(`We have not received confirmation for payment reference ${paymentReference} yet. Check your mobile-money messages before starting a new payment.`);
+        }
+        paidReference = paymentReference;
+        paymentWasConfirmed = true;
+        setConfirmedReference(paymentReference);
+      } else if (!paidReference) {
+        setPaymentState("starting");
+        setPaymentMessage("Starting your UGX 5,000 application fee payment…");
+        const reference = await startPayment(phone);
+        paidReference = reference;
+        setPaymentReference(reference);
+        setPaymentState("waiting");
+        setPaymentMessage("Payment prompt sent. Approve UGX 5,000 on your phone. Keep this page open.");
+        if (!(await waitForPayment(reference))) {
+          throw new Error(`We have not received confirmation for payment reference ${reference} yet. Check your mobile-money messages before starting a new payment.`);
+        }
+        paymentWasConfirmed = true;
+        setConfirmedReference(reference);
       }
-      if (!confirmed) throw new Error("Payment confirmation timed out. Check your mobile-money messages before trying again.");
 
       setPaymentState("submitting");
       setPaymentMessage("Payment confirmed. Securely submitting your application…");
-      const payload = {
-        application: {
-          origin: application.origin === "Other country" ? application.otherOrigin.trim() : application.origin,
-          destination: application.destination,
-          category: application.category,
-          role: application.role === OTHER_ROLE ? application.otherRole.trim() : application.role,
-          education: application.education,
-          yearsExperience: application.yearsExperience,
-          fullName: application.fullName.trim(),
-          phone: application.phone.trim(),
-          email: application.email.trim(),
-          dateOfBirth: application.dateOfBirth,
-          passport: application.passport,
-          experience: application.experience.trim(),
-          consent: application.consent,
-        },
-        paymentReference: reference,
-        paymentPhone: normalizeUgandaPhone(paymentPhone),
-        amount: APPLICATION_FEE,
-      };
-      // The server endpoint must independently verify the payment with MarzPay,
-      // enforce UGX 5,000 + paid status, prevent reference reuse and persist the form.
-      const submitResponse = await fetch(`${API_BASE}/submit-application`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const submitData = await submitResponse.json();
-      if (!submitResponse.ok || submitData.status !== "success" || !submitData.applicationId) {
-        throw new Error(submitData.message || "Payment was detected, but the server could not validate and record your application. Contact support with your payment reference.");
-      }
-      setApplicationId(String(submitData.applicationId));
+      const newApplicationId = await submitApplication(paidReference, phone);
+      setApplicationId(newApplicationId);
       setPaymentState("done");
       setPaymentMessage("Your form was submitted to Hashein Uganda successfully.");
-      try {
-        await sendEmail(
+
+      const emailResults = await Promise.allSettled([
+        sendEmail(
           application.email.trim(),
           "Your form was submitted to Hashein Uganda successfully",
-          `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#17252b"><h2>Application submitted successfully</h2><p>Hello ${emailSafe(application.fullName)},</p><p>Your form was submitted to Hashein Uganda successfully. We have confirmed your UGX 5,000 application fee and recorded your application.</p><p><strong>Application ID:</strong> ${emailSafe(submitData.applicationId)}</p><p><strong>Payment reference:</strong> ${emailSafe(reference)}</p><p>Thank you,<br>Hashein Uganda</p></div>`
-        );
-      } catch (emailError) {
-        console.error("Application confirmation email could not be sent.", emailError);
+          `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#17252b"><h2>Application submitted successfully</h2><p>Hello ${emailSafe(application.fullName)},</p><p>Your form was submitted to Hashein Uganda successfully. We have confirmed your UGX 5,000 application fee and recorded your application.</p><p><strong>Application ID:</strong> ${emailSafe(newApplicationId)}</p><p><strong>Payment reference:</strong> ${emailSafe(paidReference)}</p><p>Thank you,<br>Hashein Uganda</p></div>`
+        ),
+        sendEmail(
+          ADMIN_EMAIL,
+          `New Hashein Uganda application: ${application.fullName.trim() || newApplicationId}`,
+          applicationEmailHtml(newApplicationId, paidReference)
+        ),
+      ]);
+      for (const result of emailResults) {
+        if (result.status === "rejected") console.error("Application email could not be sent.", result.reason);
       }
     } catch (error) {
       setPaymentState("error");
-      setPaymentMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+      const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      setPaymentMessage(paymentWasConfirmed ? `${message} Your payment was already received, so retrying will not charge you again.` : message);
     } finally {
       setIsPaying(false);
     }
+  }
+
+  // Escape hatch for a genuinely unpaid prompt. Calling /collect-money again
+  // while a prompt may still be live is how applicants end up charged twice,
+  // so this always asks for an explicit second confirmation first.
+  function startNewPayment() {
+    if (isPaying) return;
+    setConfirmNewPayment(true);
+  }
+
+  function confirmStartNewPayment() {
+    setPaymentReference("");
+    setPaymentState("idle");
+    setPaymentMessage("");
+    setConfirmNewPayment(false);
   }
 
   function resetApplication() {
     setApplication(initialApplication);
     setPaymentPhone("");
     setPaymentReference("");
+    setConfirmedReference("");
     setPaymentState("idle");
     setPaymentMessage("");
     setApplicationId("");
+    setConfirmNewPayment(false);
     setFormStep(1);
   }
 
@@ -218,7 +317,10 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
                   <button className="restart-button" type="button" onClick={resetApplication}>Start another application <ArrowRight size={16} aria-hidden="true" /></button>
                 </div>
               ) : formStep === 3 ? (
-                <div className="application-confirmation payment-step">
+                <form
+                  className="application-confirmation payment-step"
+                  onSubmit={(event) => { event.preventDefault(); void payAndSubmit(); }}
+                >
                   <span className="form-eyebrow">APPLICATION FEE</span>
                   <h3>Complete your application</h3>
                   <p>Your application fee is a fixed <strong>UGX 5,000</strong>. Enter the MTN or Airtel Uganda number that should receive the payment prompt.</p>
@@ -229,12 +331,25 @@ export default function ApplicationForm({ initial }: { initial?: Partial<Applica
                   <div className="form-payment-summary"><span>Application fee</span><strong>UGX 5,000</strong></div>
                   {paymentReference && <p><strong>Payment reference:</strong> {paymentReference}</p>}
                   {paymentMessage && <p className={`payment-status payment-status--${paymentState}`} role="status" aria-live="polite">{paymentMessage}</p>}
-                  <button className="button button--dark form-submit" type="button" onClick={payAndSubmit} disabled={isPaying}>
-                    {isPaying ? "Please wait…" : paymentState === "error" ? "Try payment again" : "Pay UGX 5,000 & submit"}
+                  <button className="button button--dark form-submit" type="submit" disabled={isPaying}>
+                    {isPaying ? "Please wait…" : paymentAlreadyConfirmed ? "Retry submission" : hasPendingPayment ? "Check payment again" : paymentState === "error" ? "Try payment again" : "Pay UGX 5,000 & submit"}
                     <ArrowUpRight size={18} aria-hidden="true" />
                   </button>
-                  <button className="restart-button" type="button" disabled={isPaying} onClick={() => { setPaymentState("idle"); setPaymentMessage(""); setFormStep(2); }}>Back to application <ArrowRight size={16} aria-hidden="true" /></button>
-                </div>
+                  {hasPendingPayment && !isPaying && (
+                    confirmNewPayment ? (
+                      <div className="payment-confirm">
+                        <p>Only continue if you have not already been charged. Starting a new payment can charge you a second time.</p>
+                        <div className="payment-confirm-actions">
+                          <button className="restart-button" type="button" onClick={confirmStartNewPayment}>Yes, start a new payment</button>
+                          <button className="restart-button" type="button" onClick={() => setConfirmNewPayment(false)}>Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="restart-button" type="button" onClick={startNewPayment}>Start a new payment <ArrowRight size={16} aria-hidden="true" /></button>
+                    )
+                  )}
+                  <button className="restart-button" type="button" disabled={isPaying} onClick={() => { setPaymentState("idle"); setPaymentMessage(""); setConfirmNewPayment(false); setFormStep(2); }}>Back to application <ArrowRight size={16} aria-hidden="true" /></button>
+                </form>
               ) : (
                 <>
                   <div className="form-topline"><span>APPLICATION ENQUIRY</span><span>STEP 0{formStep} / 02</span></div>

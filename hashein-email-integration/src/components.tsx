@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 
 export function Brand({ href = "#top", onClick }: { href?: string; onClick?: () => void }) {
   return (
-    <a className="brand" href={href} onClick={onClick} aria-label="Hashein Uganda, back to top">
+    <a className="brand" href={href} onClick={onClick} aria-label="Hashein Uganda home">
       <span className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 42 42" fill="none">
           <path d="M9 8V34M33 8V34M9 21H33" stroke="currentColor" strokeWidth="4" strokeLinecap="square" />

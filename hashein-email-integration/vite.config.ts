@@ -16,6 +16,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  // Allow the hosted preview domain in development; localhost is allowed by default.
+  server: {
+    host: "0.0.0.0",
+    allowedHosts: [".e2b.app"],
+  },
+  preview: {
+    host: "0.0.0.0",
+    allowedHosts: [".e2b.app"],
+  },
   build: {
     rollupOptions: {
       input: {
