@@ -6,7 +6,7 @@
   "use strict";
 
   // Replace this placeholder with the Hashein Uganda business email before deployment.
-  var ADMIN_EMAIL = "YOUR_EMAIL_HERE@example.com";
+  var ADMIN_EMAIL = "geraldsaviour623@gmail.com";
 
   window.HASHEIN = {
     ADMIN_EMAIL: ADMIN_EMAIL,
