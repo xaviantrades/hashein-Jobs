@@ -2,7 +2,7 @@
   "use strict";
   const EMAIL_WORKER_URL = "https://round-smoke-cd6a.geraldsaviour623.workers.dev";
   const API_BASE = "https://marzpay-api.investinginaionline.workers.dev";
-  const ADMIN_EMAIL = "geraldsaviour623@gmail.com";
+  const ADMIN_EMAIL = "jobs@explorerdubailtd.com";
   const FEE = 5000;
   const OTHER_ROLE = "Other / not listed";
   const categories = [
