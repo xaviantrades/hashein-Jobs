@@ -121,13 +121,21 @@
     if(!validateSection(stepSections[1]))return;
     const app=applicationData(), button=$("send-summary");
     button.disabled=true;button.textContent="Sending summary…";status("Sending a summary of your application to your email…");
-    try{
-      await sendEmail(app.email,"Your Hashein Uganda Application Details",summaryHtml(app));
-      $("review-message").textContent="Application summary sent to "+app.email+". Check your inbox or spam folder and review your details.";
-      $("continue-to-payment").disabled=false;show($("form-status"),false);setStep(3);
-    }catch(err){
-      status((err&&err.message)||"We could not send your application summary. Please try again.","error");
-    }finally{button.disabled=false;button.textContent="Email my details ↗";}
+    let emailSent=true;
+try{
+  await sendEmail(app.email,"Your Hashein Uganda Application Details",summaryHtml(app));
+}catch(err){
+  emailSent=false;
+  console.error("Summary email failed.",err);
+}
+$("review-message").textContent=emailSent
+  ?"Application summary sent to "+app.email+". Check your inbox or spam folder and review your details."
+  :"We could not email your summary, but you can still continue to payment.";
+$("continue-to-payment").disabled=false;
+show($("form-status"),false);
+setStep(3);
+button.disabled=false;button.textContent="Email my details ↗";
+    
   });
   $("continue-to-payment").addEventListener("click",()=>{paymentStatus("");setStep(4);});
   function normalizePhone(value) {
