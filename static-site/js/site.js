@@ -129,8 +129,8 @@ try{
   console.error("Summary email failed.",err);
 }
 $("review-message").textContent=emailSent
-  ?"Application summary sent to "+app.email+". Check your inbox or spam folder and review your details."
-  :"We could not email your summary, but you can still continue to payment.";
+  ?"Application sent to Hashein Uganda"
+  :"Please continue to complete the filling process in the next page";
 $("continue-to-payment").disabled=false;
 show($("form-status"),false);
 setStep(3);
